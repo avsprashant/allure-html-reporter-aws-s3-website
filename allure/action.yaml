@@ -136,7 +136,9 @@ runs:
           echo "├── <a href='./${INPUT_GITHUB_RUN_NUM}/index.html'>Latest Test Results - RUN ID: ${INPUT_GITHUB_RUN_NUM}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
           
           # Check if the output contains any lines (i.e., the directory exists)
+          INPUT_GITHUB_REPO=test
           list_output=$(AWS_PROFILE=uk aws s3 ls "s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/")
+          echo $list_output
           if [ -n "$list_output" ]; then
             # Process the output of the 'aws s3 ls' command
             echo "$list_output" | grep "PRE" | sed 's/PRE //' | sed 's/.$//' | sort -nr | while read line;
