@@ -68,11 +68,6 @@ runs:
         echo "Generated results"
       shell: bash
 
-    - name: Generate allure results
-      run: |
-        chmod +x entrypoint.sh
-      shell: bash
-
     - name: Upload allure results
       run: |
           #this isn't required if html file already present
