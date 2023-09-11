@@ -69,6 +69,15 @@ runs:
       shell: bash
 
     - name: Upload allure results
-      run: |
-        echo "Uploaded results"
+      run: entrypoint.sh
       shell: bash
+      env:
+        INPUT_ALLURE_HISTORY: ${{ inputs.allure_history }}
+        INPUT_ALLURE_RESULTS: ${{ inputs.allure_results }}
+        INPUT_ALLURE_REPORT: ${{ inputs.allure_report }}
+        INPUT_KEEP_REPORTS: ${{ inputs.keep_reports }}
+        INPUT_GITHUB_RUN_NUM: ${{ inputs.github_run_num }}
+        INPUT_GITHUB_RUN_ID: ${{ inputs.github_run_id }}
+        INPUT_REPORT_URL: ${{ inputs.report_url }}
+        INPUT_GITHUB_REPO: ${{github.repository}}
+        
