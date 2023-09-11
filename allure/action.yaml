@@ -122,10 +122,8 @@ runs:
           #environment.properties
           echo "URL=${S3_WEBSITE_URL}" >> ./${INPUT_ALLURE_RESULTS}/environment.properties
 
-          echo "generating report from ${INPUT_ALLURE_RESULTS} to ${INPUT_ALLURE_REPORT} ..."
-          ls -l ${INPUT_ALLURE_RESULTS}
+          echo "generating report..."
           allure generate --clean ${INPUT_ALLURE_RESULTS} -o ${INPUT_ALLURE_REPORT}
-          echo "listing report directory ..."
           ls -l ${INPUT_ALLURE_REPORT}
 
           echo "copy ${INPUT_ALLURE_REPORT} to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
@@ -136,7 +134,7 @@ runs:
           cat index-template.html > ./${INPUT_ALLURE_HISTORY}/index.html
 
           echo "├── <a href='./${INPUT_GITHUB_RUN_NUM}/index.html'>Latest Test Results - RUN ID: ${INPUT_GITHUB_RUN_NUM}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
-          sh -c "AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/" | grep "PRE" | sed 's/PRE //' | sed 's/.$//' | sort -nr | while read line;
+          AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/ | grep "PRE" | sed 's/PRE //' | sed 's/.$//' | sort -nr | while read line;
           do
             echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
           done;
