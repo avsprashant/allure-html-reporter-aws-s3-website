@@ -140,11 +140,12 @@ runs:
           list_output=$(AWS_PROFILE=uk aws s3 ls "s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/")
           echo $list_output
           if [ -n "$list_output" ]; then
-            # Process the output of the 'aws s3 ls' command
             AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/  |  grep "PRE" | sed 's/PRE //'  | sed 's/.$//' | sort -nr | while read line;
             do
               echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> "./${INPUT_ALLURE_HISTORY}/index.html";
             done;
+          fi
+          echo "Hi"
           echo "</html>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
 
           echo "copy allure-results to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
