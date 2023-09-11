@@ -56,6 +56,8 @@ runs:
         # Print Allure version
         allure --version
       
+      shell: bash
+      
     - name: Generate allure results
       run: |
         echo "Generated results"
