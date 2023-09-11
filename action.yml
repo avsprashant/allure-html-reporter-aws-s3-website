@@ -6,15 +6,15 @@ branding:
 inputs:
   allure_results:
     description: 'Allure test result data dir'
-    required: true
+    required: false
     default: 'allure-results'
   allure_report:
     description: 'Allure report target dir'
-    required: true
+    required: false
     default: 'allure-report'
   allure_history:
     description: 'Folder for allure history'
-    required: true
+    required: false
     default: 'allure-history'
   keep_reports:
     description: 'Keep X last reports'
@@ -22,11 +22,11 @@ inputs:
     default: '20'    
   github_run_num:
     description: 'GitHub Actions build number'
-    required: true
+    required: false
     default: ${{ github.run_number }}
   github_run_id:
     description: 'GitHub Actions run id'
-    required: true
+    required: false
     default: ${{ github.run_id }}
   report_url:
     description: 'Use a custom URL instead of *.github.io'
