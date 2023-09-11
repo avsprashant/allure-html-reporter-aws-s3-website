@@ -125,10 +125,10 @@ runs:
           echo "listing report directory ..."
           ls -l ${INPUT_ALLURE_REPORT}
 
-          echo "copy allure-report to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
+          echo "copy ${INPUT_ALLURE_REPORT} to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
           cp -r ./${INPUT_ALLURE_REPORT}/. ./${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}
-          # echo "copy allure-report history to /${INPUT_ALLURE_HISTORY}/last-history"
-          # cp -r ./${INPUT_ALLURE_REPORT}/history/. ./${INPUT_ALLURE_HISTORY}/last-history
+          echo "copy ${INPUT_ALLURE_REPORT} history to /${INPUT_ALLURE_HISTORY}/last-history"
+          cp -r ./${INPUT_ALLURE_REPORT}/history/. ./${INPUT_ALLURE_HISTORY}/last-history
 
           # #echo "index.html"
           # echo "<!DOCTYPE html><meta charset=\"utf-8\"><meta http-equiv=\"refresh\" content=\"0; URL=${S3_WEBSITE_URL}/${INPUT_GITHUB_RUN_NUM}/\">" > ./${INPUT_ALLURE_HISTORY}/index.html # path
