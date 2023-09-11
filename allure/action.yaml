@@ -134,22 +134,19 @@ runs:
           cat index-template.html > ./${INPUT_ALLURE_HISTORY}/index.html
 
           echo "├── <a href='./${INPUT_GITHUB_RUN_NUM}/index.html'>Latest Test Results - RUN ID: ${INPUT_GITHUB_RUN_NUM}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
-          echo "HI"
-          AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/ | grep "PRE" | sed 's/PRE //' | sed 's/.$//' | sort -nr | while read line;
-          do
-            echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
-          done;
+          
+          # Check if the output contains any lines (i.e., the directory exists)
+          list_output=$(AWS_PROFILE=uk aws s3 ls "s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/")
+          if [ -n "$list_output" ]; then
+            # Process the output of the 'aws s3 ls' command
+            echo "$list_output" | grep "PRE" | sed 's/PRE //' | sed 's/.$//' | sort -nr | while read line;
+            do
+              echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> "./${INPUT_ALLURE_HISTORY}/index.html";
+            done;
           echo "</html>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
 
           echo "copy allure-results to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
           cp -R ./${INPUT_ALLURE_RESULTS}/. ./${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}
-
-          set -e
-
-          if [ -z "$AWS_S3_BUCKET" ]; then
-            echo "AWS_S3_BUCKET is not set. Quitting."
-            exit 1
-          fi
 
           # we don't want this
           # Override default AWS endpoint if user sets AWS_S3_ENDPOINT.
