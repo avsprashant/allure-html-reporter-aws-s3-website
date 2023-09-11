@@ -1,6 +1,5 @@
 name: 'allure-html-reporter-aws-s3-website'
 description: 'Allure HTML Test Results with history to publish to AWS S3 Bucket'
-author: 'Pavan Mudigonda'
 branding:
   icon: 'layout'
   color: 'green'
@@ -34,5 +33,35 @@ inputs:
     required: false
     default: ''
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install allure
+      run: |
+
+        # Set the release version and Allure repository URL
+        RELEASE="2.24.0"
+        ALLURE_REPO="https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline"
+
+        # Download and extract Allure
+        wget --no-verbose -O allure-${RELEASE}.tgz ${ALLURE_REPO}/${RELEASE}/allure-commandline-${RELEASE}.tgz
+        tar -xf allure-${RELEASE}.tgz
+
+        # Add Allure to the PATH
+        export PATH="$PATH:$(pwd)/allure-${RELEASE}/bin"
+        echo "PATH="$PATH:$(pwd)/allure-${RELEASE}/bin"" >> $GITHUB_ENV
+
+        # Print Allure version
+        allure --version
+      
+    - name: Generate allure results
+      run: |
+        echo "Generated results"
+      shell: bash
+
+    - name: Upload allure results
+      run: |
+        echo "Uploaded results"
+      shell: bash
