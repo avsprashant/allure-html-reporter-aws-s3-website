@@ -106,7 +106,7 @@ runs:
           ls -l
 
           export AWS_S3_BUCKET=habitat-build-artifacts
-          export S3_WEBSITE_URL=https://artifact.habitatenergy.online/allure/${INPUT_GITHUB_REPO}/${INPUT_GITHUB_RUN_NUM}/
+          export S3_WEBSITE_URL=https://artifact.habitatenergy.online/allure/${INPUT_GITHUB_REPO}/
 
           mkdir -p ./${INPUT_ALLURE_HISTORY}
 
