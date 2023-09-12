@@ -177,12 +177,12 @@ runs:
         INPUT_GITHUB_RUN_ID: ${{ inputs.github_run_id }}
         INPUT_REPORT_URL: ${{ inputs.report_url }}
         INPUT_GITHUB_REPO: ${{github.repository}}
-        
-    - name: Post the link to the report
-      uses: Sibz/github-status-action@v1.1.6
-      with: 
-          authToken: ${{ github.token }}
-          context: 'Test Results Link'
-          state: 'success'
-          sha: ${{ github.sha }}
-          target_url: https://artifact.habitatenergy.online/allure/${{github.repository}}/${{ inputs.github_run_num }}/
+
+    - name: Upload reports to github
+      run: |
+          echo "| [Report](https://artifact.habitatenergy.online/allure/${{github.repository}}/${{ inputs.github_run_num }}/) |" >> upload_meta_data.md
+      shell: bash
+
+    - name: Report Test Summary to Github
+      run: cat upload_meta_data.md >> $GITHUB_STEP_SUMMARY
+      shell: bash
