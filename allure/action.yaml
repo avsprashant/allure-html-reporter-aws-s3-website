@@ -70,7 +70,6 @@ runs:
 
     - name: Upload allure results
       run: |
-          #this isn't required if html file already present
           cat > index-template.html <<EOF
 
           <!DOCTYPE html>
@@ -102,9 +101,6 @@ runs:
 
           EOF
 
-          #remove later
-          ls -l
-
           export AWS_S3_BUCKET=habitat-build-artifacts
           export S3_WEBSITE_URL=https://artifact.habitatenergy.online/allure/${INPUT_GITHUB_REPO}/
 
@@ -128,10 +124,9 @@ runs:
           echo "copy ${INPUT_ALLURE_REPORT} history to /${INPUT_ALLURE_HISTORY}/last-history"
           cp -r ./${INPUT_ALLURE_REPORT}/history/. ./${INPUT_ALLURE_HISTORY}/last-history
 
+          echo "Generating index.html"
           cat index-template.html > ./${INPUT_ALLURE_HISTORY}/index.html
-
-          echo "├── <a href='./${INPUT_GITHUB_RUN_NUM}/index.html'>Latest Test Results - RUN ID: ${INPUT_GITHUB_RUN_NUM}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
-          
+          echo "├── <a href='./${INPUT_GITHUB_RUN_NUM}/index.html'>Latest Test Results - RUN ID: ${INPUT_GITHUB_RUN_NUM}</a><br>" >> ./${INPUT_ALLURE_HISTORY}/index.html;          
           # Check if dir/repo exists
           # INPUT_GITHUB_REPO=test
           # if AWS_PROFILE=uk aws s3api head-object --bucket habitat-build-artifacts --key allure/${INPUT_GITHUB_REPO}/ > /dev/null 2>&1; then
@@ -183,3 +178,11 @@ runs:
         INPUT_REPORT_URL: ${{ inputs.report_url }}
         INPUT_GITHUB_REPO: ${{github.repository}}
         
+    - name: Post the link to the report
+      uses: Sibz/github-status-action@v1.1.6
+      with: 
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: 'Test Results Link'
+          state: 'success'
+          sha: ${{ github.sha }}
+          target_url: https://artifact.habitatenergy.online/allure/${INPUT_GITHUB_REPO}/${INPUT_GITHUB_RUN_NUM}/
