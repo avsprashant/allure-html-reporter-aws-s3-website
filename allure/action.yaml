@@ -120,7 +120,6 @@ runs:
           #environment.properties
           echo "URL=${S3_WEBSITE_URL}" >> ./${INPUT_ALLURE_RESULTS}/environment.properties
 
-          echo "generating report..."
           allure generate --clean ${INPUT_ALLURE_RESULTS} -o ${INPUT_ALLURE_REPORT}
           ls -l ${INPUT_ALLURE_REPORT}
 
@@ -135,12 +134,12 @@ runs:
           
           # Check if dir/repo exists
           # INPUT_GITHUB_REPO=test
-          if AWS_PROFILE=uk aws s3api head-object --bucket habitat-build-artifacts --key allure/${INPUT_GITHUB_REPO}/ > /dev/null 2>&1; then
+          # if AWS_PROFILE=uk aws s3api head-object --bucket habitat-build-artifacts --key allure/${INPUT_GITHUB_REPO}/ > /dev/null 2>&1; then
               AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/  |  grep "PRE" | sed 's/PRE //'  | sed 's/.$//' | sort -nr | while read line;
               do
                 echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> "./${INPUT_ALLURE_HISTORY}/index.html";
               done;
-          fi
+          # fi
           echo "</html>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
 
           echo "copy allure-results to ${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM}"
@@ -152,14 +151,14 @@ runs:
             ENDPOINT_APPEND="--endpoint-url $AWS_S3_ENDPOINT"
           fi
 
-          # Copy to s3
+          echo "Upload to s3"
           AWS_PROFILE=uk aws s3 sync ./${INPUT_ALLURE_HISTORY}/${INPUT_GITHUB_RUN_NUM} s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/${INPUT_GITHUB_RUN_NUM}/ \
                 --no-progress \
                 ${ENDPOINT_APPEND} $*
           AWS_PROFILE=uk aws s3 cp ${INPUT_ALLURE_HISTORY}/index.html s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/index.html \
                 --no-progress
 
-          # Delete history
+          echo "Delete history"
           COUNT=$( sh -c "AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/" | sort -n | grep "PRE" | wc -l )
           echo "current folders in allure-history: ${COUNT}"
           echo "keep reports count ${INPUT_KEEP_REPORTS}"
