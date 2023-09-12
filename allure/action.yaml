@@ -181,8 +181,8 @@ runs:
     - name: Post the link to the report
       uses: Sibz/github-status-action@v1.1.6
       with: 
-          authToken: ${{secrets.GITHUB_TOKEN}}
+          authToken: ${{ github.token }}
           context: 'Test Results Link'
           state: 'success'
           sha: ${{ github.sha }}
-          target_url: https://artifact.habitatenergy.online/allure/${INPUT_GITHUB_REPO}/${INPUT_GITHUB_RUN_NUM}/
+          target_url: https://artifact.habitatenergy.online/allure/${{github.repository}}/${{ inputs.github_run_num }}/
