@@ -135,13 +135,11 @@ runs:
           
           # Check if dir/repo exists
           # INPUT_GITHUB_REPO=test
-          list_output=$(AWS_PROFILE=uk aws s3 ls "s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/")
-          echo $list_output
-          if [ -n "$list_output" ]; then
-            AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/  |  grep "PRE" | sed 's/PRE //'  | sed 's/.$//' | sort -nr | while read line;
-            do
-              echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> "./${INPUT_ALLURE_HISTORY}/index.html";
-            done;
+          if AWS_PROFILE=uk aws s3api head-object --bucket habitat-build-artifacts --key allure/${INPUT_GITHUB_REPO}/ > /dev/null 2>&1; then
+              AWS_PROFILE=uk aws s3 ls s3://${AWS_S3_BUCKET}/allure/${INPUT_GITHUB_REPO}/  |  grep "PRE" | sed 's/PRE //'  | sed 's/.$//' | sort -nr | while read line;
+              do
+                echo "├── <a href='./${line}/'>RUN ID: ${line}</a><br>" >> "./${INPUT_ALLURE_HISTORY}/index.html";
+              done;
           fi
           echo "</html>" >> ./${INPUT_ALLURE_HISTORY}/index.html;
 
